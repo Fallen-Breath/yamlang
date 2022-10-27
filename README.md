@@ -8,7 +8,8 @@ A gradle plugin to convert nestable yaml language file into plain json language 
 
 Here's a regular Minecraft language file in json format:
 
-```json
+```json5
+// regular json language file (comment via json5 for showcase)
 {
   "mymod.message.foo": "Foo",
   "mymod.message.bar": "Bar",
@@ -20,6 +21,7 @@ Here's a regular Minecraft language file in json format:
 Convert that into yaml directly and we get:
 
 ```yaml
+# yaml language file with plain structure like the regular json one
 mymod.message.foo: Foo
 mymod.message.bar: Bar
 mymod.baz: Baz
@@ -29,6 +31,7 @@ mymod.baz.oof: OOF
 Extract the common segments in the keys, and we have the nestable yaml format:
 
 ```yaml
+# nestable yaml language file 1
 mymod:
   message:
     foo: Foo
@@ -38,10 +41,10 @@ mymod:
     oof: OOF
 ```
 
-Since it's nest-able, not must-nest, so you can also choose to use:
+Since the format is nest-able, not must-nest, the following content is also accepted and equivalent:
 
 ```yaml
-# Example 2
+# nestable yaml language file 2
 mymod:
   message.foo: Foo
   message:
@@ -56,9 +59,9 @@ The tailing `.` will be trimmed, so we can have a single `.` as the key
 Advantages of language file in nestable yaml format:
 
 - Yaml features:
-  - Cleaner
-  - Comments
-  - Multi-line strings
+  - More intuitive
+  - Comment support
+  - Multi-line string support
 - Nestable structures:
   - Shorter translation keys
   - Foldable in modern editors
