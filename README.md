@@ -1,5 +1,7 @@
 ## yamlang
 
+[![](https://jitpack.io/v/Fallen-Breath/yamlang.svg)](https://jitpack.io/#Fallen-Breath/yamlang)
+
 A gradle plugin to convert nestable yaml language file into plain json language file for Minecraft mods
 
 ### What's nestable yaml format
@@ -75,17 +77,27 @@ so you can write your language files in nestable yaml format and run your mod wi
 
 Since it does everything during the compilation, no extra burden is needed at runtime
 
-### Example Usages
+### Usages
 
-#### 1. Apply the yamlang plugin
+#### 1. Apply
 
-yamlang is available in jitpack. You need to add jitpack to the repository list for gralde plugin so gradle can locate the yamlang plugin
+yamlang is available in jitpack. You need to tell gradle how to locate yamlang in jitpack:
 
 ```groovy
 // settings.gradle
 pluginManagement {
     repositories {
         maven { url 'https://jitpack.io' }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            switch (requested.id.id) {
+                case "me.fallenbreath.yamlang": {
+                    useModule("com.github.Fallen-Breath:yamlang:${requested.version}")
+                    break
+                }
+            }
+        }
     }
 }
 ```
@@ -99,7 +111,7 @@ plugins {
 }
 ```
 
-#### 2. Configure the yamlang plugin
+#### 2. Configure
 
 Basic configuration:
 
