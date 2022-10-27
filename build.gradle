@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '1.0.0'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation "org.yaml:snakeyaml:${project.snakeyaml_version}"
+    implementation "com.google.code.gson:gson:${project.gson_version}"
+    implementation "com.google.guava:guava:${project.guava_version}"
+    implementation "org.apache.commons:commons-lang3:${project.commons_lang3_version}"
+}
+
+version = project.plugin_version
+group = project.maven_group
+archivesBaseName = project.archives_base_name
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+pluginBundle {
+    website = 'https://github.com/Fallen-Breath/yamlang'
+    vcsUrl = 'https://github.com/Fallen-Breath/yamlang'
+    tags = ['Minecraft']
+}
+
+gradlePlugin {
+    plugins {
+        yamlangPlugin {
+            id = 'me.fallenbreath.yamlang'
+            displayName = 'Yamlang'
+            description = 'A gradle plugin to convert nestable yaml language file into plain json language file for Minecraft mods'
+            implementationClass = 'me.fallenbreath.yamlang.YamlangPlugin'
+        }
+    }
+}
