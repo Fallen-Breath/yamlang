@@ -25,6 +25,7 @@ public abstract class YamlangConvertor extends DefaultTask
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
 		String inputDir = extension.getInputDir().getOrElse("");
 		String outputDir = extension.getOutputDir().getOrElse(inputDir);
+		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
 		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
 
 		if (inputDir.isEmpty() || outputDir.isEmpty())
@@ -36,7 +37,7 @@ public abstract class YamlangConvertor extends DefaultTask
 
 		this.getProject().copy(copySpec -> {
 			copySpec.from(basePath.resolve(inputDir));
-			copySpec.include("*" + YAML_PREFIX);
+			copySpec.include(targetFilePattern);
 			copySpec.filter(YamlLang2JsonMapper.class);
 			copySpec.rename(YamlangConvertor::renameYaml2Json);
 			copySpec.into(basePath.resolve(outputDir));
@@ -45,7 +46,7 @@ public abstract class YamlangConvertor extends DefaultTask
 		{
 			this.getProject().delete(deleteSpec -> {
 				deleteSpec.delete(this.getProject().fileTree(basePath.resolve(inputDir), files -> {
-					files.include("*" + YAML_PREFIX);
+					files.include(targetFilePattern);
 				}));
 			});
 		}

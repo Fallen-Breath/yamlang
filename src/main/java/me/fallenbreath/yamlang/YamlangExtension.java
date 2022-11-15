@@ -29,6 +29,13 @@ public interface YamlangExtension
 	Property<String> getOutputDir();
 
 	/**
+	 * The file name pattern of the language files in yaml
+	 * <p>
+	 * Default value: *.yml
+	 */
+	Property<String> getTargetFilePattern();
+
+	/**
 	 * Should the original yaml language files be preserved after the conversion
 	 * <p>
 	 * Default value: false, which means those yaml language files will be deleted after the conversion
