@@ -110,7 +110,7 @@ Now you can apply the plugin to your project
 ```groovy
 // build.gradle
 plugins {
-    id 'me.fallenbreath.yamlang' version '1.0.0'
+    id 'me.fallenbreath.yamlang' version '1.1.0'
 }
 ```
 
