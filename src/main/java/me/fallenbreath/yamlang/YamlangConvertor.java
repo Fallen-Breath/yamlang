@@ -6,8 +6,9 @@ import org.gradle.api.tasks.TaskAction;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 
-public abstract class YamlangConvertor extends DefaultTask
+public class YamlangConvertor extends DefaultTask
 {
 	private static final String YAML_PREFIX = ".yml";
 	private static final String JSON_PREFIX = ".json";
@@ -23,10 +24,10 @@ public abstract class YamlangConvertor extends DefaultTask
 	private void doConversion()
 	{
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
-		String inputDir = extension.getInputDir().getOrElse("");
-		String outputDir = extension.getOutputDir().getOrElse(inputDir);
-		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
-		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
+		String inputDir = Optional.ofNullable(extension.inputDir).orElse("");
+		String outputDir = Optional.ofNullable(extension.outputDir).orElse(inputDir);
+		String targetFilePattern = Optional.ofNullable(extension.targetFilePattern).orElse("*" + YAML_PREFIX);
+		boolean preserveYaml = Optional.ofNullable(extension.preserveYaml).orElse(false);
 
 		if (inputDir.isEmpty() || outputDir.isEmpty())
 		{

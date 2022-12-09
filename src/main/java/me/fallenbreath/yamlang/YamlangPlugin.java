@@ -7,7 +7,9 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 
 import java.util.Collections;
+import java.util.Optional;
 
+@SuppressWarnings("UnstableApiUsage")
 public class YamlangPlugin implements Plugin<Project>
 {
 	@Override
@@ -15,7 +17,7 @@ public class YamlangPlugin implements Plugin<Project>
 	{
 		YamlangExtension extension = project.getExtensions().create("yamlang", YamlangExtension.class);
 		project.afterEvaluate(p -> {
-			for (SourceSet sourceSet : extension.getTargetSourceSets().getOrElse(Collections.emptyList()))
+			for (SourceSet sourceSet : Optional.ofNullable(extension.targetSourceSets).orElse(Collections.emptyList()))
 			{
 				String taskName = String.format("yamlangConvert%sResources", StringUtils.capitalize(sourceSet.getName()));
 				project.getLogger().info("Hooking sourceset {}", sourceSet);
