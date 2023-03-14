@@ -5,18 +5,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.*;
+import java.io.FilterReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class YamlLang2JsonMapper extends FilterReader
+public class Yamlang2JsonlangMapper extends FilterReader
 {
-	public YamlLang2JsonMapper(Reader reader) throws IOException
+	public Yamlang2JsonlangMapper(Reader reader) throws IOException
 	{
-		super(new StringReader(yamlLang2Json(CharStreams.toString(reader))));
+		super(new StringReader(yamlang2Jsonlang(CharStreams.toString(reader))));
 	}
 
-	private static String yamlLang2Json(String ymlContent)
+	private static String yamlang2Jsonlang(String ymlContent)
 	{
 		Map<String, Object> yamlMap = new Yaml().load(ymlContent);
 		Map<String, String> result = new LinkedHashMap<>();

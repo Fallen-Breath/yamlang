@@ -51,7 +51,7 @@ public abstract class YamlangConvertor extends DefaultTask
 		this.getProject().copy(copySpec -> {
 			copySpec.from(basePath.resolve(inputDir));
 			copySpec.include(targetFilePattern);
-			copySpec.filter(YamlLang2JsonMapper.class);
+			copySpec.filter(Yamlang2JsonlangMapper.class);
 			copySpec.rename(YamlangConvertor::renameYaml2Json);
 			copySpec.into(basePath.resolve(outputDir));
 		});
