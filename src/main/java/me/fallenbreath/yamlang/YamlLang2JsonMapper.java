@@ -29,6 +29,10 @@ public class YamlLang2JsonMapper extends FilterReader
 	private static void parseMap(Map<String, String> result, Map<String, Object> yamlMap, String prefix)
 	{
 		yamlMap.forEach((key, value) -> {
+			if (value == null)
+			{
+				return;
+			}
 			String fullKey = prefix.isEmpty() ? key : (!key.equals(".") ? prefix + "." + key : prefix);
 			if (value instanceof String)
 			{
