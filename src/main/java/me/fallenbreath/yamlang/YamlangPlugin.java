@@ -23,7 +23,7 @@ public class YamlangPlugin implements Plugin<Project>
 
 				project.getTasks().register(taskName, YamlangConvertor.class, task -> {
 					task.setSourceSet(sourceSet);
-					task.onlyIf(t -> !processResources.getState().getUpToDate());
+					task.onlyIf(s -> !processResources.getState().getUpToDate());
 				});
 				processResources.finalizedBy(taskName);
 			}

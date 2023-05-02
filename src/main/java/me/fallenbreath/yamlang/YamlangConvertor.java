@@ -22,6 +22,19 @@ public abstract class YamlangConvertor extends DefaultTask
 	@TaskAction
 	private void doConversion()
 	{
+		try
+		{
+			this.doConversionImpl();
+		}
+		catch (Exception e)
+		{
+			this.getLogger().error("Failed to execute yaml-to-json conversion", e);
+			throw e;
+		}
+	}
+
+	private void doConversionImpl()
+	{
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
 		String inputDir = extension.getInputDir().getOrElse("");
 		String outputDir = extension.getOutputDir().getOrElse(inputDir);
