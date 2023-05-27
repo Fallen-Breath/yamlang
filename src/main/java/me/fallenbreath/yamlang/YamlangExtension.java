@@ -38,7 +38,16 @@ public interface YamlangExtension
 	/**
 	 * Should the original yaml language files be preserved after the conversion
 	 * <p>
+	 * Given that Minecraft uses UTF-8 to load language files, it's generally advised to just keep the default value
+	 * <p>
 	 * Default value: false, which means those yaml language files will be deleted after the conversion
 	 */
 	Property<Boolean> getPreserveYaml();
+
+	/**
+	 * The charset of the yaml files
+	 * <p>
+	 * Default value: "UTF-8"
+	 */
+	Property<String> getCharset();
 }

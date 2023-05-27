@@ -142,12 +142,22 @@ yamlang {
     // The output path of converted json language file, related to the resources dir
     // When not set, it will use inputDir as the fallback value
     outputDir = 'assets/mymod/jsonlang'
+
+    // If the yaml language files ends with ".yaml" instead of ".yml"
+    targetFilePattern = '*.yaml'
     
     // Should the original yaml language files be preserved after the conversion
     // Default value: false, which means those yaml language files will be deleted after the conversion
     preserveYaml = true
+  
+    // The file encoding of the language files
+    // Given that Minecraft uses UTF-8 to load language files, it's generally advised to just keep the default value
+    // Default value: "UTF-8"
+    charset = 'UTF-8'
 }
 ```
+
+See also: class [me.fallenbreath.yamlang.YamlangExtension](src/main/java/me/fallenbreath/yamlang/YamlangExtension.java)
 
 #### 3. Done
 

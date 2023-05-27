@@ -49,6 +49,7 @@ public abstract class YamlangConvertor extends DefaultTask
 		Path basePath = Objects.requireNonNull(this.sourceSet.getOutput().getResourcesDir()).toPath();
 
 		this.getProject().copy(copySpec -> {
+			copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
 			copySpec.from(basePath.resolve(inputDir));
 			copySpec.include(targetFilePattern);
 			copySpec.filter(Yamlang2JsonlangMapper.class);
