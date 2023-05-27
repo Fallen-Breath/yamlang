@@ -25,19 +25,16 @@ archivesBaseName = project.archives_base_name
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-pluginBundle {
+gradlePlugin {
     website = 'https://github.com/Fallen-Breath/yamlang'
     vcsUrl = 'https://github.com/Fallen-Breath/yamlang'
-    tags = ['Minecraft']
-}
-
-gradlePlugin {
     plugins {
         yamlangPlugin {
             id = 'me.fallenbreath.yamlang'
             displayName = 'Yamlang'
             description = 'A gradle plugin to convert nestable yaml language file into plain json language file for Minecraft mods'
             implementationClass = 'me.fallenbreath.yamlang.YamlangPlugin'
+            tags.set(['Minecraft', 'mod'])
         }
     }
 }
