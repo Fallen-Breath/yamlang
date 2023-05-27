@@ -63,8 +63,9 @@ Advantages of language file in nestable yaml format:
   - Comment support
   - Multi-line string support
 - Nestable structures:
-  - Shorter translation keys
+  - Shorter line in the translation file
   - Foldable in modern editors
+  - Object reference equals to the actual translation key
 
 ### Yamlang plugin
 
