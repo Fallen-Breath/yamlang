@@ -111,7 +111,7 @@ Now you can apply the plugin to your project
 ```groovy
 // build.gradle
 plugins {
-    id 'me.fallenbreath.yamlang' version '1.2.1'
+    id 'me.fallenbreath.yamlang' version '1.3.0'
 }
 ```
 
