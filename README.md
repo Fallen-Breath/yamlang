@@ -1,6 +1,7 @@
 ## yamlang
 
-[![](https://jitpack.io/v/Fallen-Breath/yamlang.svg)](https://jitpack.io/#Fallen-Breath/yamlang)
+[![JitPack](https://jitpack.io/v/Fallen-Breath/yamlang.svg)](https://jitpack.io/#Fallen-Breath/yamlang)
+[![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/me.fallenbreath.yamlang)](https://plugins.gradle.org/plugin/me.fallenbreath.yamlang)
 
 A gradle plugin to convert nestable yaml language file into plain json language file for Minecraft mods
 
@@ -85,28 +86,7 @@ Since it does everything during the compilation, no extra burden is needed at ru
 
 #### 1. Apply
 
-yamlang is available in jitpack. You need to tell gradle how to locate yamlang in jitpack:
-
-```groovy
-// settings.gradle
-pluginManagement {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-    resolutionStrategy {
-        eachPlugin {
-            switch (requested.id.id) {
-                case "me.fallenbreath.yamlang": {
-                    useModule("com.github.Fallen-Breath:yamlang:${requested.version}")
-                    break
-                }
-            }
-        }
-    }
-}
-```
-
-Now you can apply the plugin to your project
+Since version `1.3.0`, yamlang is available in the [gradle plugin portal](https://plugins.gradle.org/plugin/me.fallenbreath.yamlang), which means you can simply apply yamlang to your project in `build.gradle`:
 
 ```groovy
 // build.gradle
@@ -130,6 +110,7 @@ yamlang {
 Full configuration with all possible entries:
 
 ```groovy
+// build.gradle
 yamlang {
     // A list storing source sets where resources with your language files are
     // Usually the language files are inside your main source set
@@ -165,6 +146,31 @@ That's it, everything is done
 
 You can now write your language files in nestable yaml format freely, and the plugin will handle the rest
 
+#### Apply yamlang from JitPack
+
+If you need to apply yamlang from JitPack for purposes such as debugging, you need to first teach Gradle how to locate yamlang in JitPack:
+
+```groovy
+// settings.gradle
+pluginManagement {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            switch (requested.id.id) {
+                case "me.fallenbreath.yamlang": {
+                    useModule("com.github.Fallen-Breath:yamlang:${requested.version}")
+                    break
+                }
+            }
+        }
+    }
+}
+```
+
+Now, you can apply the yamlang plugin to your project using the steps provided above
+
 ## What does the plugin do
 
 It creates tasks named `yamlangConvert<sourceSetName>Resources` and append them to the end of the process resource tasks of the given source sets. In this task, it will:
@@ -172,6 +178,7 @@ It creates tasks named `yamlangConvert<sourceSetName>Resources` and append them 
 1. Read yaml files in the given path, e.g. `en_us.yml`
 2. Flatten the content into plain map without nesting structures (i.e. `Map<String, String>` in java)
 3. Write them into the json file, e.g. `en_us.json`
+4. Delete the yaml files in the given path. They are useless now
 
-Basically it converts the yaml language file into the Minecraft friendly json format language file when gradle compiles your mod,
+Basically, it converts the yaml language file into the Minecraft friendly json format language file when gradle compiles your mod,
 so the subsequent processes are impervious to the original format of the language files
