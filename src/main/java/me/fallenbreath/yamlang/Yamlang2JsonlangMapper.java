@@ -21,7 +21,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 
 	private static String yamlang2Jsonlang(String ymlContent)
 	{
-		Map<String, Object> yamlMap = new Yaml().load(ymlContent);
+		Map<Object, Object> yamlMap = new Yaml().load(ymlContent);
 		Map<String, String> result = new LinkedHashMap<>();
 		parseMap(result, yamlMap, "");
 		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -29,13 +29,19 @@ public class Yamlang2JsonlangMapper extends FilterReader
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void parseMap(Map<String, String> result, Map<String, Object> yamlMap, String prefix)
+	private static void parseMap(Map<String, String> result, Map<Object, Object> yamlMap, String prefix)
 	{
-		yamlMap.forEach((key, value) -> {
+		yamlMap.forEach((keyObj, value) -> {
 			if (value == null)
 			{
 				return;
 			}
+			if (!(keyObj instanceof String))
+			{
+				throw new IllegalArgumentException(String.format("Bad type %s for key %s at path %s", keyObj.getClass(), keyObj, prefix));
+			}
+
+			String key = (String)keyObj;
 			String fullKey = prefix.isEmpty() ? key : (!key.equals(".") ? prefix + "." + key : prefix);
 			if (value instanceof String)
 			{
@@ -43,11 +49,11 @@ public class Yamlang2JsonlangMapper extends FilterReader
 			}
 			else if (value instanceof Map)
 			{
-				parseMap(result, (Map<String, Object>)value, fullKey);
+				parseMap(result, (Map<Object, Object>)value, fullKey);
 			}
 			else
 			{
-				throw new RuntimeException(String.format("Unknown type %s in with key %s", value.getClass(), fullKey));
+				throw new IllegalArgumentException(String.format("Unknown type %s in with key %s", value.getClass(), fullKey));
 			}
 		});
 	}
