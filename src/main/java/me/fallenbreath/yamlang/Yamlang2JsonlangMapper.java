@@ -53,7 +53,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 			}
 			else
 			{
-				throw new IllegalArgumentException(String.format("Unknown type %s in with key %s", value.getClass(), fullKey));
+				throw new IllegalArgumentException(String.format("Bad type %s for value %s on key %s", value.getClass(), value, fullKey));
 			}
 		});
 	}
