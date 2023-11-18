@@ -91,7 +91,7 @@ Since version `1.3.0`, yamlang is available in the [gradle plugin portal](https:
 ```groovy
 // build.gradle
 plugins {
-    id 'me.fallenbreath.yamlang' version '1.3.0'
+    id 'me.fallenbreath.yamlang' version '1.3.1'
 }
 ```
 
