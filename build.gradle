@@ -10,8 +10,6 @@ dependencies {
     implementation gradleApi()
     implementation "org.yaml:snakeyaml:${project.snakeyaml_version}"
     implementation "com.google.code.gson:gson:${project.gson_version}"
-    implementation "com.google.guava:guava:${project.guava_version}"
-    implementation "org.apache.commons:commons-lang3:${project.commons_lang3_version}"
 }
 
 javadoc {

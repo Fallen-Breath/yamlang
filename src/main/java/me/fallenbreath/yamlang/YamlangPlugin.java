@@ -1,6 +1,6 @@
 package me.fallenbreath.yamlang;
 
-import org.apache.commons.lang3.StringUtils;
+import me.fallenbreath.yamlang.utils.StringUtils;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;

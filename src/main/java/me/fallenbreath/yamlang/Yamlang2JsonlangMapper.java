@@ -1,8 +1,8 @@
 package me.fallenbreath.yamlang;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.fallenbreath.yamlang.utils.IOUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FilterReader;
@@ -16,7 +16,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 {
 	public Yamlang2JsonlangMapper(Reader reader) throws IOException
 	{
-		super(new StringReader(yamlang2Jsonlang(CharStreams.toString(reader))));
+		super(new StringReader(yamlang2Jsonlang(IOUtils.readerToString(reader))));
 	}
 
 	private static String yamlang2Jsonlang(String ymlContent)
