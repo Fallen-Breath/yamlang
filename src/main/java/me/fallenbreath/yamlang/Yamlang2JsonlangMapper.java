@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Yamlang2JsonlangMapper extends FilterReader
@@ -22,14 +23,14 @@ public class Yamlang2JsonlangMapper extends FilterReader
 	private static String yamlang2Jsonlang(String ymlContent)
 	{
 		Map<Object, Object> yamlMap = new Yaml().load(ymlContent);
-		Map<String, String> result = new LinkedHashMap<>();
+		Map<String, Object> result = new LinkedHashMap<>();
 		parseMap(result, yamlMap, "");
 		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		return gson.toJson(result);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void parseMap(Map<String, String> result, Map<Object, Object> yamlMap, String prefix)
+	private static void parseMap(Map<String, Object> result, Map<Object, Object> yamlMap, String prefix)
 	{
 		yamlMap.forEach((keyObj, value) -> {
 			if (value == null)
@@ -45,12 +46,16 @@ public class Yamlang2JsonlangMapper extends FilterReader
 			String fullKey = prefix.isEmpty() ? key : (!key.equals(".") ? prefix + "." + key : prefix);
 			if (value instanceof String)
 			{
-				result.put(fullKey, (String) value);
+				result.put(fullKey, value);
 			}
 			else if (value instanceof Map)
 			{
 				parseMap(result, (Map<Object, Object>)value, fullKey);
 			}
+            else if (value instanceof List)
+            {
+                result.put(fullKey, value);
+            }
 			else
 			{
 				throw new IllegalArgumentException(String.format("Bad type %s for value %s on key %s", value.getClass(), value, fullKey));
