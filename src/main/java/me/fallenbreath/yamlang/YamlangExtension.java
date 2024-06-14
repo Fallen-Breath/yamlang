@@ -50,4 +50,14 @@ public interface YamlangExtension
 	 * Default value: "UTF-8"
 	 */
 	Property<String> getCharset();
+
+	/**
+	 * Enables the rich translation support in yaml files
+	 * <p>
+	 * This option preserves lists added to the language file
+	 * <p>
+	 * Default value: false
+	 * @see <a href="https://docs.wispforest.io/owo/rich-translations/">OWO-LIB Rich Translations</a>
+	 */
+	Property<Boolean> getRichTranslations();
 }

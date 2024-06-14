@@ -1,5 +1,6 @@
 package me.fallenbreath.yamlang;
 
+import com.google.common.collect.ImmutableMap;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
@@ -36,6 +37,10 @@ public abstract class YamlangConvertor extends DefaultTask
 	private void doConversionImpl()
 	{
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
+		ImmutableMap<String, Object> properties = ImmutableMap.<String, Object>builder()
+				.put("allowLists", extension.getRichTranslations().getOrElse(false))
+				.build();
+
 		String inputDir = extension.getInputDir().getOrElse("");
 		String outputDir = extension.getOutputDir().getOrElse(inputDir);
 		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
@@ -52,7 +57,7 @@ public abstract class YamlangConvertor extends DefaultTask
 			copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
 			copySpec.from(basePath.resolve(inputDir));
 			copySpec.include(targetFilePattern);
-			copySpec.filter(Yamlang2JsonlangMapper.class);
+			copySpec.filter(properties, Yamlang2JsonlangMapper.class);
 			copySpec.rename(YamlangConvertor::renameYaml2Json);
 			copySpec.into(basePath.resolve(outputDir));
 		});

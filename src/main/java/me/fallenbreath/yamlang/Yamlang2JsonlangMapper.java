@@ -1,26 +1,54 @@
 package me.fallenbreath.yamlang;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.tools.ant.filters.BaseParamFilterReader;
+import org.apache.tools.ant.types.Parameter;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Yamlang2JsonlangMapper extends FilterReader
+public class Yamlang2JsonlangMapper extends BaseParamFilterReader
 {
+	private boolean allowLists = false;
+
 	public Yamlang2JsonlangMapper(Reader reader) throws IOException
 	{
-		super(new StringReader(yamlang2Jsonlang(CharStreams.toString(reader))));
+		super(new DelegatedStringReader(reader));
 	}
 
-	private static String yamlang2Jsonlang(String ymlContent)
+	@Override
+	public int read() throws IOException
+	{
+		if (!getInitialized())
+		{
+			initialize();
+		}
+		return super.read();
+	}
+
+	private void initialize() {
+		Parameter[] params = getParameters();
+		if (params != null) {
+			for (Parameter param : params)
+			{
+				if (param.getName().equals("allowLists"))
+				{
+					allowLists = Boolean.parseBoolean(param.getValue());
+				}
+			}
+		}
+		DelegatedStringReader delegate = (DelegatedStringReader) in;
+		String processed = yamlang2Jsonlang(delegate.getContents());
+		delegate.setContents(processed);
+		setInitialized(true);
+	}
+
+	private String yamlang2Jsonlang(String ymlContent)
 	{
 		Map<Object, Object> yamlMap = new Yaml().load(ymlContent);
 		Map<String, Object> result = new LinkedHashMap<>();
@@ -30,7 +58,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void parseMap(Map<String, Object> result, Map<Object, Object> yamlMap, String prefix)
+	private void parseMap(Map<String, Object> result, Map<Object, Object> yamlMap, String prefix)
 	{
 		yamlMap.forEach((keyObj, value) -> {
 			if (value == null)
@@ -52,7 +80,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 			{
 				parseMap(result, (Map<Object, Object>)value, fullKey);
 			}
-            else if (value instanceof List)
+            else if (allowLists && value instanceof List)
             {
                 result.put(fullKey, value);
             }
