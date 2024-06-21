@@ -24,7 +24,7 @@ public abstract class YamlangConvertor extends DefaultTask
 	private static final String JSON_PREFIX = ".json";
 
 	private SourceSet sourceSet;
-	private ConverterConfiguration configuration;
+	private boolean owolibRichTranslationLists;
 
 	void setSourceSet(SourceSet sourceSet)
 	{
@@ -48,9 +48,7 @@ public abstract class YamlangConvertor extends DefaultTask
 	private void doConversionImpl()
 	{
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
-		this.configuration = new ConverterConfiguration(
-				extension.getRichTranslations().getOrElse(false)
-		);
+		this.owolibRichTranslationLists = extension.getOwolibRichTranslations().getOrElse(false);
 
 		String inputDir = extension.getInputDir().getOrElse("");
 		String outputDir = extension.getOutputDir().getOrElse(inputDir);
@@ -120,7 +118,7 @@ public abstract class YamlangConvertor extends DefaultTask
 			{
 				parseMap(result, (Map<Object, Object>)value, fullKey);
 			}
-			else if (configuration.allowLists && value instanceof List)
+			else if (owolibRichTranslationLists && value instanceof List)
 			{
 				result.put(fullKey, value);
 			}
@@ -133,7 +131,8 @@ public abstract class YamlangConvertor extends DefaultTask
 
 	public class Yamlang2JsonlangMapper extends FilterReader
 	{
-		public Yamlang2JsonlangMapper(Reader reader) throws IOException {
+		public Yamlang2JsonlangMapper(Reader reader) throws IOException
+		{
 			super(new StringReader(yamlang2Jsonlang(CharStreams.toString(reader))));
 		}
 	}
