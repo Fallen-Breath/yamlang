@@ -124,7 +124,9 @@ yamlang {
     // When not set, it will use inputDir as the fallback value
     outputDir = 'assets/mymod/jsonlang'
 
-    // If the yaml language files ends with ".yaml" instead of ".yml"
+    // The file name pattern of the language files in yaml
+    // You can use it, if e.g. the yaml language files ends with ".yaml" instead of ".yml", 
+    // Default value: "*.yml"
     targetFilePattern = '*.yaml'
     
     // Should the original yaml language files be preserved after the conversion
@@ -135,6 +137,11 @@ yamlang {
     // Given that Minecraft uses UTF-8 to load language files, it's generally advised to just keep the default value
     // Default value: "UTF-8"
     charset = 'UTF-8'
+
+    // Enables OWO-LIB Rich Translations (https://docs.wispforest.io/owo/rich-translations) in the yaml translation files
+    // This option preserves lists added to the language file
+    // Default value: false, which means lists are not allowed
+    owolibRichTranslations = false
 }
 ```
 
@@ -176,7 +183,7 @@ Now, you can apply the yamlang plugin to your project using the steps provided a
 It creates tasks named `yamlangConvert<sourceSetName>Resources` and append them to the end of the process resource tasks of the given source sets. In this task, it will:
 
 1. Read yaml files in the given path, e.g. `en_us.yml`
-2. Flatten the content into plain map without nesting structures (i.e. `Map<String, String>` in java)
+2. Flatten the content into plain map without nesting structures (e.g. `Map<String, String>` in java)
 3. Write them into the json file, e.g. `en_us.json`
 4. Delete the yaml files in the given path. They are useless now
 

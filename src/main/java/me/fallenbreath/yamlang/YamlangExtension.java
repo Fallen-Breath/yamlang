@@ -56,7 +56,7 @@ public interface YamlangExtension
 	 * <p>
 	 * This option preserves lists added to the language file
 	 * <p>
-	 * Default value: false
+	 * Default value: false, which means lists are not allowed
 	 */
 	Property<Boolean> getOwolibRichTranslations();
 }
