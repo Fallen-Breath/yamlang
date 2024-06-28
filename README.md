@@ -155,6 +155,9 @@ You can now write your language files in nestable yaml format freely, and the pl
 
 #### Apply yamlang from JitPack
 
+> [!NOTE]
+> Debugging / Testing only
+
 If you need to apply yamlang from JitPack for purposes such as debugging, you need to first teach Gradle how to locate yamlang in JitPack:
 
 ```groovy
