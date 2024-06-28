@@ -52,12 +52,12 @@ public abstract class YamlangConvertor extends DefaultTask
 
 		this.getProject().copy(copySpec -> {
 			Map<String, Object> properties = new HashMap<>();
-			properties.put("args", new Yamlang2JsonlangMapper.Args(this.getLogger(), extension));
+			properties.put("args", new Yamlang2JsonlangTransformer.Args(this.getLogger(), extension));
 
 			copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
 			copySpec.from(basePath.resolve(inputDir));
 			copySpec.include(targetFilePattern);
-			copySpec.filter(properties, Yamlang2JsonlangMapper.class);
+			copySpec.filter(properties, Yamlang2JsonlangTransformer.class);
 			copySpec.rename(YamlangConvertor::renameYaml2Json);
 			copySpec.into(basePath.resolve(outputDir));
 		});

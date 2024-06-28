@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class Yamlang2JsonlangMapper extends FilterReader
+public class Yamlang2JsonlangTransformer extends FilterReader
 {
 	public static class Args
 	{
@@ -31,7 +31,7 @@ public class Yamlang2JsonlangMapper extends FilterReader
 	private final Reader originalReader;
 	private Args args = null;
 
-	public Yamlang2JsonlangMapper(Reader reader)
+	public Yamlang2JsonlangTransformer(Reader reader)
 	{
 		super(reader);
 		this.originalReader = reader;
