@@ -1,10 +1,12 @@
 package me.fallenbreath.yamlang;
 
+import com.google.common.collect.Maps;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Objects;
 
 public abstract class YamlangConvertor extends DefaultTask
@@ -49,10 +51,13 @@ public abstract class YamlangConvertor extends DefaultTask
 		Path basePath = Objects.requireNonNull(this.sourceSet.getOutput().getResourcesDir()).toPath();
 
 		this.getProject().copy(copySpec -> {
+			Map<String, Object> properties = Maps.newHashMap();
+			properties.put("args", new Yamlang2JsonlangMapper.Args(this.getLogger(), extension));
+
 			copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
 			copySpec.from(basePath.resolve(inputDir));
 			copySpec.include(targetFilePattern);
-			copySpec.filter(Yamlang2JsonlangMapper.class);
+			copySpec.filter(properties, Yamlang2JsonlangMapper.class);
 			copySpec.rename(YamlangConvertor::renameYaml2Json);
 			copySpec.into(basePath.resolve(outputDir));
 		});
