@@ -1,9 +1,11 @@
 package me.fallenbreath.yamlang;
 
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.SourceSet;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 public interface YamlangExtension
 {
@@ -27,6 +29,24 @@ public interface YamlangExtension
 	 * When not set, it will use {@link #getInputDir} as the fallback value
 	 */
 	Property<String> getOutputDir();
+
+	/**
+	 * Input directories containing yaml files.
+	 * <p>
+	 * Paths are relative to the resources directory in the specified source sets.
+	 * <p>
+	 * These directories are processed separately. To change the output directory use {@link YamlangExtension#getMoveOutputDirs()}
+	 */
+	ListProperty<String> getInputDirs();
+
+	/**
+	 * Moves the output files to another directory.
+	 * <p>
+	 * Accepts every path specified in {@link YamlangExtension#getInputDirs()} and returns a destination for each.
+	 * <p>
+	 * By default, keeps the same file location.
+	 */
+	Property<Function<String, String>> getMoveOutputDirs();
 
 	/**
 	 * The file name pattern of the language files in yaml
