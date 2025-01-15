@@ -22,7 +22,7 @@ public abstract class YamlangConvertor extends DefaultTask
 	}
 
 	@TaskAction
-	private void doConversion()
+	public void doConversion()
 	{
 		try
 		{
