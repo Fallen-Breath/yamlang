@@ -18,10 +18,12 @@ javadoc {
 
 version = project.plugin_version
 group = project.maven_group
-archivesBaseName = project.archives_base_name
+base.archivesName = project.archives_base_name
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 gradlePlugin {
     website = 'https://github.com/Fallen-Breath/yamlang'
