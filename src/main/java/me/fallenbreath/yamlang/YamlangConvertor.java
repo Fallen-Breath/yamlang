@@ -5,9 +5,8 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 
 public abstract class YamlangConvertor extends DefaultTask
 {
@@ -40,13 +39,27 @@ public abstract class YamlangConvertor extends DefaultTask
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
 		String inputDir = extension.getInputDir().getOrElse("");
 		String outputDir = extension.getOutputDir().getOrElse(inputDir);
-		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
-		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
 
+		List<String> inputDirs = extension.getInputDirs().getOrElse(Collections.emptyList());
+		Function<String, String> outputTransformer = extension.getMoveOutputDirs().getOrElse(in -> in);
+
+		convertDirectory(extension, inputDir, outputDir);
+		for (String additionalInput : inputDirs)
+		{
+			String destinationDir = outputTransformer.apply(additionalInput);
+			convertDirectory(extension, additionalInput, destinationDir);
+		}
+	}
+
+	private void convertDirectory(YamlangExtension extension, String inputDir, String outputDir)
+	{
 		if (inputDir.isEmpty() || outputDir.isEmpty())
 		{
 			return;
 		}
+
+		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
+		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
 
 		Path basePath = Objects.requireNonNull(this.sourceSet.getOutput().getResourcesDir()).toPath();
 
