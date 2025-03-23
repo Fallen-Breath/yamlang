@@ -5,14 +5,15 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public abstract class YamlangConvertor extends DefaultTask
 {
-	private static final String YAML_PREFIX = ".yml";
-	private static final String JSON_PREFIX = ".json";
+	private static final String YAML_SUFFIX = ".yml";
+	private static final String JSON_SUFFIX = ".json";
 
 	private SourceSet sourceSet;
 
@@ -38,42 +39,54 @@ public abstract class YamlangConvertor extends DefaultTask
 	private void doConversionImpl()
 	{
 		YamlangExtension extension = this.getProject().getExtensions().getByType(YamlangExtension.class);
-		String inputDir = extension.getInputDir().getOrElse("");
-		String outputDir = extension.getOutputDir().getOrElse(inputDir);
-		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_PREFIX);
+		String targetFilePattern = extension.getTargetFilePattern().getOrElse("*" + YAML_SUFFIX);
 		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
-
-		if (inputDir.isEmpty() || outputDir.isEmpty())
-		{
-			return;
-		}
-
 		Path basePath = Objects.requireNonNull(this.sourceSet.getOutput().getResourcesDir()).toPath();
 
-		this.getProject().copy(copySpec -> {
-			Map<String, Object> properties = new HashMap<>();
-			properties.put("args", new Yamlang2JsonlangTransformer.Args(this.getLogger(), extension));
+		Map<String, String> directoriesMapped;
 
-			copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
-			copySpec.from(basePath.resolve(inputDir));
-			copySpec.include(targetFilePattern);
-			copySpec.filter(properties, Yamlang2JsonlangTransformer.class);
-			copySpec.rename(YamlangConvertor::renameYaml2Json);
-			copySpec.into(basePath.resolve(outputDir));
-		});
-		if (!preserveYaml)
+		if (extension.getInputDir().isPresent()) {
+			String inputDir = extension.getInputDir().get();
+			String outputDir = extension.getOutputDir().getOrElse(inputDir);
+			directoriesMapped = new HashMap<>();
+			directoriesMapped.put(inputDir, outputDir);
+		} else {
+			directoriesMapped = extension.getDirectoriesMapped().getOrElse(new HashMap<>());
+			for (String dir : extension.getDirectories().getOrElse(new ArrayList<>())) {
+				directoriesMapped.put(dir, dir);
+			}
+		}
+
+		for (Map.Entry<String, String> kv : directoriesMapped.entrySet())
 		{
-			this.getProject().delete(deleteSpec -> {
-				deleteSpec.delete(this.getProject().fileTree(basePath.resolve(inputDir), files -> {
-					files.include(targetFilePattern);
-				}));
+			String inputDir = kv.getKey();
+			String outputDir = kv.getValue();
+
+			this.getProject().copy(copySpec -> {
+				Map<String, Object> properties = new HashMap<>();
+				properties.put("args", new Yamlang2JsonlangTransformer.Args(this.getLogger(), extension));
+
+				copySpec.setFilteringCharset(extension.getCharset().getOrElse("UTF-8"));
+				copySpec.from(basePath.resolve(inputDir));
+				copySpec.include(targetFilePattern);
+				copySpec.filter(properties, Yamlang2JsonlangTransformer.class);
+				copySpec.rename(YamlangConvertor::renameYaml2Json);
+				copySpec.into(basePath.resolve(outputDir));
 			});
+			if (!preserveYaml)
+			{
+				this.getProject().delete(deleteSpec -> {
+					deleteSpec.delete(this.getProject().fileTree(basePath.resolve(inputDir), files -> {
+						files.include(targetFilePattern);
+					}));
+				});
+			}
 		}
 	}
 
 	private static String renameYaml2Json(String fileName)
 	{
-		String baseName = fileName.substring(0, fileName.length() - YAML_PREFIX.length());
-		return baseName + JSON_PREFIX;
+		String baseName = fileName.substring(0, fileName.length() - YAML_SUFFIX.length());
+		return baseName + JSON_SUFFIX;
 	}
 }
