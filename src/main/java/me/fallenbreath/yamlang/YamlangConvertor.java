@@ -43,18 +43,18 @@ public abstract class YamlangConvertor extends DefaultTask
 		boolean preserveYaml = extension.getPreserveYaml().getOrElse(false);
 		Path basePath = Objects.requireNonNull(this.sourceSet.getOutput().getResourcesDir()).toPath();
 
-		Map<String, String> directoriesMapped;
+		Map<String, String> directoriesMapped = new HashMap<>();
 
 		if (extension.getInputDir().isPresent()) {
 			String inputDir = extension.getInputDir().get();
 			String outputDir = extension.getOutputDir().getOrElse(inputDir);
-			directoriesMapped = new HashMap<>();
 			directoriesMapped.put(inputDir, outputDir);
 		} else {
-			directoriesMapped = extension.getDirectoriesMapped().getOrElse(new HashMap<>());
 			for (String dir : extension.getDirectories().getOrElse(new ArrayList<>())) {
 				directoriesMapped.put(dir, dir);
 			}
+
+			directoriesMapped.putAll(extension.getDirectoriesMapped().getOrElse(new HashMap<>()));
 		}
 
 		for (Map.Entry<String, String> kv : directoriesMapped.entrySet())
