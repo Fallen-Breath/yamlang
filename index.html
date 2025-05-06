@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Json - Yamlang Converter</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/lib/codemirror.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/theme/monokai.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 95vw;
+      padding-top: 10px;
+    }
+    .editor-container {
+      height: calc(100vh - 200px);
+      min-height: 300px;
+      max-height: calc(100vh - 200px);
+      overflow: auto;
+    }
+    .CodeMirror {
+      height: 100%;
+      border: 1px solid #ddd;
+      font-size: 15px;
+    }
+    .CodeMirror-empty {
+      color: #b0b0b0;
+    }
+    .btn-convert {
+      margin: 10px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin: 0.25rem 0;
+    }
+    #error-message {
+      margin: 10px;
+      min-height: 50px;
+      display: none;
+    }
+    #error-message.active {
+      display: block;
+    }
+    .github-badge {
+      position: absolute;
+      top: 10px;
+      right: 30px;
+      font-size: 24px;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .github-badge:hover {
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="https://github.com/Fallen-Breath/yamlang" class="github-badge" title="View on GitHub">
+    <i class="fab fa-github"></i>
+  </a>
+  <h1 class="text-center">Json - Yamlang Converter</h1>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Json Input</h3>
+      <div class="editor-container">
+        <textarea id="json-editor"></textarea>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-primary btn-convert" onclick="convertJsonToYaml()">Json to Yamlang --></button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h3>Yaml Input</h3>
+      <div class="editor-container">
+        <textarea id="yaml-editor"></textarea>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-primary btn-convert" onclick="convertYamlToJson()"><-- Yamlang to Json</button>
+      </div>
+    </div>
+  </div>
+  <div id="error-message" class="alert alert-danger"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/lib/codemirror.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/mode/javascript/javascript.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/mode/yaml/yaml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.5/addon/display/placeholder.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script>
+  function jsonToYamlang(jsonObj) {
+    const root = {};
+    for (const key in jsonObj) {
+      const parts = key.split('.');
+      let current = root;
+      parts.forEach((part, index) => {
+        if (index < parts.length - 1) {
+          if (!current[part]) {
+            current[part] = {};
+          } else if (typeof current[part] !== 'object') {
+            current[part] = { '.': current[part] };
+          }
+          current = current[part];
+        } else {
+          if (current[part] && typeof current[part] === 'object') {
+            current[part]['.'] = jsonObj[key];
+          } else {
+            current[part] = jsonObj[key];
+          }
+        }
+      });
+    }
+    return root;
+  }
+
+  function yamlangToJson(yamlObj) {
+    const result = {};
+    function flatten(obj, prefix = '') {
+      for (const key in obj) {
+        if (key === '.') {
+          result[prefix.slice(0, -1)] = obj[key];
+        } else if (typeof obj[key] === 'object') {
+          flatten(obj[key], prefix + key + '.');
+        } else {
+          result[prefix + key] = obj[key];
+        }
+      }
+    }
+    flatten(yamlObj);
+    return result;
+  }
+
+  function jsonToString(jsonObj) {
+    return JSON.stringify(jsonObj, null, 2) + '\n';
+  }
+
+  function yamlToString(yamlObj) {
+    return jsyaml.dump(yamlObj, {
+      styles: {
+        '!!str': 'literal'  // use | for multiline
+      },
+      lineWidth: -1
+    });
+  }
+
+  const exampleJson = {
+    "mymod.message.foo": "Foo",
+    "mymod.message.bar": "Bar",
+    "mymod.message.multiline": "the first line\nthe second line",
+    "mymod.baz": "Baz",
+    "mymod.baz.oof": "OOF"
+  }
+
+  const jsonEditor = CodeMirror.fromTextArea(document.getElementById('json-editor'), {
+    mode: 'application/json',
+    lineNumbers: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: false,
+    placeholder: jsonToString(exampleJson),
+    autofocus: true,
+  });
+  const yamlEditor = CodeMirror.fromTextArea(document.getElementById('yaml-editor'), {
+    mode: 'yaml',
+    lineNumbers: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: false,
+    placeholder: yamlToString(jsonToYamlang(exampleJson)),
+  });
+
+  function showError(message) {
+    const errorDiv = document.getElementById('error-message');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('active');
+  }
+
+  function hideError() {
+    document.getElementById('error-message').classList.remove('active');
+  }
+
+  function convertJsonToYaml() {
+    hideError();
+    try {
+      const jsonText = jsonEditor.getValue();
+      const jsonObj = JSON.parse(jsonText);
+      const yamlObj = jsonToYamlang(jsonObj);
+      const yamlText = yamlToString(yamlObj);
+      yamlEditor.setValue(yamlText);
+    } catch (e) {
+      showError('Invalid JSON: ' + e.message);
+    }
+  }
+
+  function convertYamlToJson() {
+    hideError();
+    try {
+      const yamlText = yamlEditor.getValue();
+      const yamlObj = jsyaml.load(yamlText);
+      const jsonObj = yamlangToJson(yamlObj);
+      const jsonText = jsonToString(jsonObj);
+      jsonEditor.setValue(jsonText);
+    } catch (e) {
+      showError('Invalid YAML: ' + e.message);
+    }
+  }
+</script>
+</body>
+</html>
