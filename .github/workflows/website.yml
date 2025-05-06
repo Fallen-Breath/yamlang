@@ -1,0 +1,25 @@
+name: Website
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'website/**'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: website
+          FOLDER: website
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SQUASH_HISTORY: true
+          SKIP_EMPTY_COMMITS: true
