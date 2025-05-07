@@ -1,5 +1,6 @@
 package me.fallenbreath.yamlang;
 
+import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.SourceSet;
 
@@ -27,6 +28,16 @@ public interface YamlangExtension
 	 * When not set, it will use {@link #getInputDir} as the fallback value
 	 */
 	Property<String> getOutputDir();
+
+	/**
+	 * Multi-directory option for inputDir()
+	 */
+	Property<Collection<String>> getDirectories();
+
+	/**
+	 * Multi-directory option for inputDir() + outputDir
+	 */
+	MapProperty<String, String> getDirectoriesMapped();
 
 	/**
 	 * The file name pattern of the language files in yaml
