@@ -22,24 +22,24 @@ public class YamlangPlugin implements Plugin<Project>
 				String taskName = String.format("yamlangConvert%sResources", StringUtils.capitalize(sourceSet.getName()));
 				project.getLogger().info("Hooking sourceset {}", sourceSet);
 
-                TaskProvider<YamlangConvertResourcesTask> provider = project.getTasks().register(taskName, YamlangConvertResourcesTask.class, task -> {
-                    task.dependsOn(sourceSet.getProcessResourcesTaskName());
-                    task.getOutputs().upToDateWhen(t -> false);
+				TaskProvider<YamlangConvertResourcesTask> provider = project.getTasks().register(taskName, YamlangConvertResourcesTask.class, task -> {
+					task.dependsOn(sourceSet.getProcessResourcesTaskName());
+					task.getOutputs().upToDateWhen(t -> false);
 
-                    DirectoryProperty destination = project.getObjects().directoryProperty().fileValue(sourceSet.getOutput().getResourcesDir());
-                    Provider<Directory> inputDir = destination.dir(extension.getInputDir().orElse(""));
-                    Provider<Directory> outputDir = destination.dir(extension.getOutputDir().orElse(extension.getInputDir().orElse("")));
+					DirectoryProperty destination = project.getObjects().directoryProperty().fileValue(sourceSet.getOutput().getResourcesDir());
+					Provider<Directory> inputDir = destination.dir(extension.getInputDir().orElse(""));
+					Provider<Directory> outputDir = destination.dir(extension.getOutputDir().orElse(extension.getInputDir().orElse("")));
 
-                    task.getInputDirectory().set(inputDir);
-                    task.getOutputDirectory().set(outputDir);
-                    task.getTargetFilePattern().set(extension.getTargetFilePattern());
-                    task.getPreserveYaml().set(extension.getPreserveYaml());
-                    task.getCharset().set(extension.getCharset());
-                    task.getOwolibRichTranslations().set(extension.getOwolibRichTranslations());
+					task.getInputDirectory().set(inputDir);
+					task.getOutputDirectory().set(outputDir);
+					task.getTargetFilePattern().set(extension.getTargetFilePattern());
+					task.getPreserveYaml().set(extension.getPreserveYaml());
+					task.getCharset().set(extension.getCharset());
+					task.getOwolibRichTranslations().set(extension.getOwolibRichTranslations());
 				});
-                project.getTasks().getByName(sourceSet.getProcessResourcesTaskName(), task -> task.finalizedBy(provider));
-                project.getTasks().getByName(sourceSet.getClassesTaskName(), task -> task.dependsOn(provider));
-            }
+				project.getTasks().getByName(sourceSet.getProcessResourcesTaskName(), task -> task.finalizedBy(provider));
+				project.getTasks().getByName(sourceSet.getClassesTaskName(), task -> task.dependsOn(provider));
+			}
 		});
 	}
 }

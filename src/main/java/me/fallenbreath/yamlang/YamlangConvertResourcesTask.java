@@ -20,31 +20,31 @@ import org.gradle.api.tasks.TaskAction;
 
 public abstract class YamlangConvertResourcesTask extends DefaultTask
 {
-    private static final String YAML_PREFIX = ".yml";
-    private static final String JSON_PREFIX = ".json";
+	private static final String YAML_PREFIX = ".yml";
+	private static final String JSON_PREFIX = ".json";
 
-    @Inject
-    protected abstract FileSystemOperations getFileSystemOperations();
+	@Inject
+	protected abstract FileSystemOperations getFileSystemOperations();
 
-    @InputDirectory @PathSensitive(PathSensitivity.NAME_ONLY) @SkipWhenEmpty @IgnoreEmptyDirectories
-    public abstract DirectoryProperty getInputDirectory();
+	@InputDirectory @PathSensitive(PathSensitivity.NAME_ONLY) @SkipWhenEmpty @IgnoreEmptyDirectories
+	public abstract DirectoryProperty getInputDirectory();
 
-    @OutputDirectory
-    public abstract DirectoryProperty getOutputDirectory();
+	@OutputDirectory
+	public abstract DirectoryProperty getOutputDirectory();
 
-    @Input @Optional
-    public abstract Property<String> getTargetFilePattern();
+	@Input @Optional
+	public abstract Property<String> getTargetFilePattern();
 
-    @Input @Optional
-    public abstract Property<Boolean> getPreserveYaml();
+	@Input @Optional
+	public abstract Property<Boolean> getPreserveYaml();
 
-    @Input @Optional
-    public abstract Property<String> getCharset();
+	@Input @Optional
+	public abstract Property<String> getCharset();
 
-    @Input @Optional
-    public abstract Property<Boolean> getOwolibRichTranslations();
+	@Input @Optional
+	public abstract Property<Boolean> getOwolibRichTranslations();
 
-    @TaskAction
+	@TaskAction
 	public void doConversion()
 	{
 		try
@@ -58,20 +58,20 @@ public abstract class YamlangConvertResourcesTask extends DefaultTask
 		}
 	}
 
-    private FileTree getYamlFileTree() {
-        return this.getInputDirectory().getAsFileTree().matching(pattern -> pattern.include(
-                this.getTargetFilePattern().getOrElse("*" + YAML_PREFIX)
-        ));
-    }
+	private FileTree getYamlFileTree() {
+		return this.getInputDirectory().getAsFileTree().matching(pattern -> pattern.include(
+				this.getTargetFilePattern().getOrElse("*" + YAML_PREFIX)
+		));
+	}
 
 	private void doConversionImpl()
 	{
-        FileTree yamlFileTree = getYamlFileTree();
+		FileTree yamlFileTree = getYamlFileTree();
 		DirectoryProperty outputDir = this.getOutputDirectory();
 
 		boolean preserveYaml = this.getPreserveYaml().getOrElse(false);
-        String charset = this.getCharset().getOrElse("UTF-8");
-        boolean owolibRichTranslations = this.getOwolibRichTranslations().getOrElse(false);
+		String charset = this.getCharset().getOrElse("UTF-8");
+		boolean owolibRichTranslations = this.getOwolibRichTranslations().getOrElse(false);
 
 		this.getFileSystemOperations().copy(copySpec -> {
 			Map<String, Object> properties = new HashMap<>();
