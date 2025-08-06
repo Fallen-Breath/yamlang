@@ -9,7 +9,6 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.jvm.tasks.Jar;
 
 public class YamlangPlugin implements Plugin<Project>
 {
@@ -39,7 +38,7 @@ public class YamlangPlugin implements Plugin<Project>
                     task.getOwolibRichTranslations().set(extension.getOwolibRichTranslations());
 				});
                 project.getTasks().getByName(sourceSet.getProcessResourcesTaskName(), task -> task.finalizedBy(provider));
-                project.getTasks().withType(Jar.class, task -> task.dependsOn(provider));
+                project.getTasks().getByName(sourceSet.getClassesTaskName(), task -> task.dependsOn(provider));
             }
 		});
 	}
