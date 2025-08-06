@@ -2,10 +2,6 @@ package me.fallenbreath.yamlang;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.gradle.api.logging.Logger;
-import me.fallenbreath.yamlang.utils.IOUtils;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.FilterReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -13,6 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import me.fallenbreath.yamlang.utils.IOUtils;
+import org.gradle.api.logging.Logger;
+import org.yaml.snakeyaml.Yaml;
 
 public class Yamlang2JsonlangTransformer extends FilterReader
 {
@@ -21,10 +20,10 @@ public class Yamlang2JsonlangTransformer extends FilterReader
 		public final Logger logger;
 		public final boolean enableOwolibRichTranslations;
 
-		public Args(Logger logger, YamlangExtension extension)
+		public Args(Logger logger, boolean enableOwolibRichTranslations)
 		{
 			this.logger = logger;
-			this.enableOwolibRichTranslations = extension.getOwolibRichTranslations().getOrElse(false);
+			this.enableOwolibRichTranslations = enableOwolibRichTranslations;
 		}
 	}
 
